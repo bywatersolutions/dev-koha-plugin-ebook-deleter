@@ -1,4 +1,4 @@
-package Koha::Plugin::Com::ByWaterSolutions::RecordMerger;
+package Koha::Plugin::Com::ByWaterSolutions::EBookDeleter;
 
 ## It's good practive to use Modern::Perl
 use Modern::Perl;
@@ -105,51 +105,8 @@ sub tool_step2 {
     my $cgi = $self->{'cgi'};
 
     my $dbh = C4::Context->dbh();
-    print "Creating temporary table, populating with normalized data.\n";
-    $dbh->do("DROP TABLE IF EXISTS temp_dedupe;");
-    $dbh->do(
-        q{
-            CREATE TABLE temp_dedupe (
-                entry_id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                biblionumber int(11) NOT NULL,
-                normal_data varchar(255) NOT NULL,
-                KEY normal_data (normal_data)
-            ) ENGINE=InnoDB CHARSET=utf8;
-        }
-    );
-    my $insert_sth = $dbh->prepare("INSERT INTO temp_dedupe (biblionumber,normal_data) VALUES (?,?)");
-    my $sth        = $dbh->prepare("SELECT biblionumber FROM biblioitems");
-    my $marc_sth   = $dbh->prepare("SELECT marc FROM biblioitems WHERE biblionumber=?");
-    my $entry_sth  = $dbh->prepare("SELECT author,title FROM biblio where biblionumber=?");
 
-    my $output;
-
-  ROW: while ( my $row = $csv->getline($infh) ) {
-        my $data = $row->[0];
-
-        for my $bibnum (@$row) {
-            $i++;
-            print ".";
-            print "\r$i" unless ( $i % 100 );
-            $entry_sth->execute($bibnum);
-            if ( !$entry_sth->fetchrow_array ) {
-                if ( $bibnum eq $data ) {
-                    $output->{$bib "$bibnum: Master biblio does not exist! Cannot merge.\n";
-                    $field_not_present++;
-                    next ROW;
-                }
-                else {
-                    print "$bibnum: Child biblio does not exist.\n";
-                    next;
-                }
-            }
-            $inserted++;
-            $insert_sth->execute( $bibnum, $data );
-        }
-    }
-
-    print "\n$i records read from file.\n$inserted lines inserted to dedupe table.\n";
-    print "$field_not_present master records were missing.\n\n";
+    my $vendor = $cgi->param("vendor");
 
     my $filename = $cgi->param("uploaded_file");
     my ( $name, $path, $extension ) = fileparse( $filename, '.csv' );
@@ -157,10 +114,8 @@ sub tool_step2 {
     my $upload_dir = '/tmp';
     my $infh       = $cgi->upload("uploaded_file");
 
-    my $csv = Text::CSV->new( { binary => 1 } )
-      or die "Cannot use CSV: " . Text::CSV->error_diag();
-
     my $template = $self->get_template( { file => 'tool-step2.tt' } );
+    $template->param( vendor => $vendor );
 
     print $cgi->header();
     print $template->output();
