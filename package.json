@@ -1,6 +1,6 @@
 {
   "name": "koha-plugin-ebook-deleter",
-  "version": "2.1.1",
+  "version": "1.0.0",
   "description": "Koha Ebook Deleter Plugin",
   "devDependencies": {
     "gulp": "^3.9.1",
