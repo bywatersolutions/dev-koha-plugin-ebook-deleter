@@ -1,20 +1,38 @@
 [% INCLUDE 'doc-head-open.inc' %]
- <title>Koha: Plugin: Record Merger</title>
+ <title>Koha: Plugin: Ebook Deleter</title>
 [% INCLUDE 'doc-head-close.inc' %]
 </head>
 <body>
 [% INCLUDE 'header.inc' %]
 [% INCLUDE 'cat-search.inc' %]
 
-<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; Record merger &rsaquo; Upload file</div>
+<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; Ebook Deleter &rsaquo; Search</div>
 
 <div id="doc3">
-    <form method="post" enctype="multipart/form-data">
-        <p>Vendor name: <input type="text" name="vendor" /></p>
-        <input type="hidden" name="class" value="[% CLASS %]"/>
-        <input type="hidden" name="method" value="[% METHOD %]"/>
-        <p>File of biblionumbers to upload: <input type="file" name="uploaded_file" /></p>
-        <input name="submitted" type="submit" value="Upload" />
+    <form class="form-horizontal">
+      <input type="hidden" name="class" value="[% CLASS %]"/>
+      <input type="hidden" name="method" value="[% METHOD %]"/>
+
+      <div class="form-group">
+          <label for="url_contains" class="col-sm-2 control-label">856$u contains:</label>
+          <div class="col-sm-5">
+              <input class="form-control" type="text" name="url_contains" />
+          </div>
+      </div>
+
+      <div class="form-group">
+          <label for="url_ends_with" class="col-sm-2 control-label">856$u ends with:</label>
+          <div class="col-sm-5">
+              <textarea class="form-control" name="url_ends_with" rows="20" cols="50"></textarea>
+          </div>
+      </div>
+
+      <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-default">Search</button>
+          </div>
+      </div>
+
     </form>
 
 [% INCLUDE 'intranet-bottom.inc' %]

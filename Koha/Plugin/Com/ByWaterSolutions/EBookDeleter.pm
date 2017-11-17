@@ -62,7 +62,7 @@ sub tool {
 
     my $cgi = $self->{'cgi'};
 
-    unless ( $cgi->param('uploaded_file') ) {
+    unless ( $cgi->param('url_contains') ) {
         $self->tool_step1();
     }
     else {
@@ -104,21 +104,30 @@ sub tool_step2 {
     my ( $self, $args ) = @_;
     my $cgi = $self->{'cgi'};
 
+    my $url_contains = $cgi->param('url_contains');
+    my $url_ends_with = $cgi->param('url_ends_with');
+
+    my @lines = split /\r?\n/, $url_ends_with;
+
     my $dbh = C4::Context->dbh();
+    my $query = qq{
+        SELECT itemnumber
+        FROM biblioitems
+        LEFT JOIN items USING ( biblioitemnumber )
+        WHERE url LIKE '%$url_contains%'
+        AND (
+    };
 
-    my $vendor = $cgi->param("vendor");
+    my @likes = map { "( url LIKE '%$_' OR url LIKE '%$_  | %' )" } @lines;
+    $query .= join( ' OR ', @likes );
+    $query .= ')';
 
-    my $filename = $cgi->param("uploaded_file");
-    my ( $name, $path, $extension ) = fileparse( $filename, '.csv' );
+    my $items = $dbh->selectall_arrayref( $query, { Slice => {} } );
 
-    my $upload_dir = '/tmp';
-    my $infh       = $cgi->upload("uploaded_file");
+    my $url = '/cgi-bin/koha/tools/batchMod.pl?del=1&op=show&';
+    $url .= join( '&', map { "itemnumber=" . $_->{itemnumber}  } @$items );
 
-    my $template = $self->get_template( { file => 'tool-step2.tt' } );
-    $template->param( vendor => $vendor );
-
-    print $cgi->header();
-    print $template->output();
+    print $cgi->redirect($url);
 }
 
 1;
