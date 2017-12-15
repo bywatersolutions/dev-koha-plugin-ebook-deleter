@@ -25,12 +25,12 @@ our $VERSION = "{VERSION}";
 
 ## Here is our metadata, some keys are required, some are optional
 our $metadata = {
-    name   => 'Record Merger',
+    name   => 'Ebook Deleter',
     author => 'Kyle M Hall',
     description =>
 'This plugin takes a CSV file of biblionumbers and merges all records in a row into the record specified in the first column',
     date_authored   => '2015-07-01',
-    date_updated    => '2015-07-01',
+    date_updated    => '1900-01-01',
     minimum_version => '3.18',
     maximum_version => undef,
     version         => $VERSION,
