@@ -109,16 +109,19 @@ sub tool_step2 {
     my @lines = split /\r?\n/, $url_ends_with;
 
     my $dbh = C4::Context->dbh();
+    my $extract_value = q| ExtractValue(metadata, '//datafield[@tag="856"]/subfield[@code="u"]') |;
     my $query = qq{
         SELECT biblionumber
-        FROM biblioitems
-        WHERE url LIKE '%$url_contains%'
+        FROM biblio_metadata
+        WHERE $extract_value LIKE '%$url_contains%'
         AND (
     };
 
-    my @likes = map { "( url LIKE '%$_' OR url LIKE '%$_  | %' )" } @lines;
+    my @likes = map { "( $extract_value LIKE '%$_' OR $extract_value LIKE '%$_  | %' )" } @lines;
     $query .= join( ' OR ', @likes );
     $query .= ')';
+
+    warn "QUERY: $query";
 
     my $bibs = $dbh->selectall_arrayref( $query, { Slice => {} } );
 
