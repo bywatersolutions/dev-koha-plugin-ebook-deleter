@@ -27,8 +27,7 @@ our $VERSION = "{VERSION}";
 our $metadata = {
     name   => 'Ebook Deleter',
     author => 'Kyle M Hall',
-    description =>
-'This plugin takes a CSV file of biblionumbers and merges all records in a row into the record specified in the first column',
+    description => 'This plugin assists in batch deleting ebook records',
     date_authored   => '2015-07-01',
     date_updated    => '1900-01-01',
     minimum_version => '3.18',
