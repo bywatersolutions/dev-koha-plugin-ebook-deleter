@@ -1,6 +1,8 @@
 [% INCLUDE 'doc-head-open.inc' %]
  <title>Koha: Plugin: Ebook Deleter</title>
 [% INCLUDE 'doc-head-close.inc' %]
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/additional-methods.min.js"></script>
 </head>
 <body>
 [% INCLUDE 'header.inc' %]
@@ -9,14 +11,14 @@
 <div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; Ebook Deleter &rsaquo; Search</div>
 
 <div id="doc3">
-    <form class="form-horizontal" id="search-form">
+    <form class="form-horizontal" id="ebooks-form">
       <input type="hidden" name="class" value="[% CLASS %]"/>
       <input type="hidden" name="method" value="[% METHOD %]"/>
 
       <div class="form-group">
           <label for="url_contains" class="col-sm-2 control-label">Vendor name in 856$u:</label>
           <div class="col-sm-5">
-              <input class="form-control" type="text" name="url_contains" id="url_contains" required minlength="6" />
+              <input class="form-control" type="text" name="url_contains" id="urlcontains"/>
           </div>
           <p class="help-block">All records containing this vendor name in an 856$u will be selected.</p>
       </div>
@@ -24,7 +26,7 @@
       <div class="form-group">
           <label for="url_ends_with" class="col-sm-2 control-label">Ebook IDs:</label>
           <div class="col-sm-5">
-              <textarea class="form-control" name="url_ends_with" id="url_ends_with" rows="20" cols="50" required></textarea>
+              <textarea class="form-control" name="url_ends_with" id="urlendswith" rows="20" cols="50"></textarea>
           </div>
           <p class="help-block">Found at the end of the 856$u.</p>
       </div>
@@ -36,7 +38,18 @@
       </div>
     </form>
     <script>
-        $("#search-form").validate();
+    $().ready(function() {
+        $("#ebooks-form").validate();
+        $("#urlcontains").rules( "add", {
+            required: true,
+            minlength: 6,
+            pattern: /^\S*$/
+        });
+        $("#urlendswith").rules( "add", {
+            required: true,
+            pattern: /^[0-9\r\n]+$/
+        });
+    });
     </script>
 
 [% INCLUDE 'intranet-bottom.inc' %]
