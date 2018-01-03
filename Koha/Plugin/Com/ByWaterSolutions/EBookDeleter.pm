@@ -110,9 +110,8 @@ sub tool_step2 {
 
     my $dbh = C4::Context->dbh();
     my $query = qq{
-        SELECT itemnumber
+        SELECT biblionumber
         FROM biblioitems
-        LEFT JOIN items USING ( biblioitemnumber )
         WHERE url LIKE '%$url_contains%'
         AND (
     };
@@ -121,10 +120,10 @@ sub tool_step2 {
     $query .= join( ' OR ', @likes );
     $query .= ')';
 
-    my $items = $dbh->selectall_arrayref( $query, { Slice => {} } );
+    my $bibs = $dbh->selectall_arrayref( $query, { Slice => {} } );
 
-    my $url = '/cgi-bin/koha/tools/batchMod.pl?del=1&op=show&';
-    $url .= join( '&', map { "itemnumber=" . $_->{itemnumber}  } @$items );
+    my $url = '/cgi-bin/koha/tools/batch_delete_records.pl?recordtype=biblio&op=list&recordnumber_list=';
+    $url .= join( '%0D%0A', map { $_->{biblionumber}  } @$bibs );
 
     print $cgi->redirect($url);
 }
