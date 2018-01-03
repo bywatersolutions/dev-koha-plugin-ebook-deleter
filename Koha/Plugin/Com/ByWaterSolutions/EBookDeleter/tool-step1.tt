@@ -14,17 +14,19 @@
       <input type="hidden" name="method" value="[% METHOD %]"/>
 
       <div class="form-group">
-          <label for="url_contains" class="col-sm-2 control-label">856$u contains:</label>
+          <label for="url_contains" class="col-sm-2 control-label">Vendor name in 856$u:</label>
           <div class="col-sm-5">
               <input class="form-control" type="text" name="url_contains" />
           </div>
+          <p class="help-block">All records containing this vendor name in an 856$u will be selected.</p>
       </div>
 
       <div class="form-group">
-          <label for="url_ends_with" class="col-sm-2 control-label">856$u ends with:</label>
+          <label for="url_ends_with" class="col-sm-2 control-label">Ebook IDs:</label>
           <div class="col-sm-5">
               <textarea class="form-control" name="url_ends_with" rows="20" cols="50"></textarea>
           </div>
+          <p class="help-block">Found at the end of the 856$u.</p>
       </div>
 
       <div class="form-group">
